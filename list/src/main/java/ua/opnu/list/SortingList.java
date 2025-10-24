@@ -82,9 +82,6 @@ public class SortingList extends Application {
         primaryStage.show();
     }
 
-    /*
-     * Заповнюємо список даними вручну
-     */
     private ObservableList<Student> populateList() {
         Student student1 = new Student("Борис", "Іванов", 75);
         Student student2 = new Student("Петро", "Петренко", 92);
@@ -96,56 +93,57 @@ public class SortingList extends Application {
         return FXCollections.observableArrayList(
                 student1, student2, student3, student4);
     }
-
-    /*
-     * Налаштовуємо кнопки. Тут має бути ваш код
-     */
+    
     private HBox setButtons() {
-        // Кнопка JavaFX має клас Button
-        final Button sortByNameButton = new Button("Сортувати за ім'ям");
-        final Button sortByLastNameButton = new Button("Сортувати за прізвищем");
-        final Button sortByMarkButton = new Button("Сортувати за оцінкою");
+    final Button sortByNameButton = new Button("Сортувати за ім'ям");
+    final Button sortByLastNameButton = new Button("Сортувати за прізвищем");
+    final Button sortByMarkButton = new Button("Сортувати за оцінкою");
 
-        // Блок коду нижче дозволяє кнопкам розтягуватися завширшки, щоб зайняти
-        // весь простір HBox, причому кнопки будуть однакового розміру
-        HBox.setHgrow(sortByNameButton, Priority.ALWAYS);
-        HBox.setHgrow(sortByLastNameButton, Priority.ALWAYS);
-        HBox.setHgrow(sortByMarkButton, Priority.ALWAYS);
-        sortByNameButton.setMaxWidth(Double.MAX_VALUE);
-        sortByLastNameButton.setMaxWidth(Double.MAX_VALUE);
-        sortByMarkButton.setMaxWidth(Double.MAX_VALUE);
+    HBox.setHgrow(sortByNameButton, Priority.ALWAYS);
+    HBox.setHgrow(sortByLastNameButton, Priority.ALWAYS);
+    HBox.setHgrow(sortByMarkButton, Priority.ALWAYS);
+    sortByNameButton.setMaxWidth(Double.MAX_VALUE);
+    sortByLastNameButton.setMaxWidth(Double.MAX_VALUE);
+    sortByMarkButton.setMaxWidth(Double.MAX_VALUE);
 
-        // Обробка натискання кнопки за допомогою об'єкта анонімного класу,
-        // реалізує інтерфейс Comparable
+    // окремі стани порядку для кожної кнопки
+    final boolean[] nameAsc = { true };
+    final boolean[] lastNameAsc = { true };
+    final boolean[] markAsc = { true };
 
-        final boolean[] order = {true};
+    sortByNameButton.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            students.sort(new NameSorter(nameAsc[0]));
+            nameAsc[0] = !nameAsc[0];
+        }
+    });
 
-        sortByNameButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                students.sort(new NameSorter(order[0]));
-                order[0] = !order[0];
-            }
-        });
+    sortByLastNameButton.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            students.sort(new LastNameSorter(lastNameAsc[0]));
+            lastNameAsc[0] = !lastNameAsc[0];
+        }
+    });
 
-        // TODO: Обробка натискання на кнопку "Сортувати за прізвищем"
+    sortByMarkButton.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            students.sort(new AvgMarkSorter(markAsc[0]));
+            markAsc[0] = !markAsc[0];
+        }
+    });
 
-        // TODO: Обробка натискання на кнопку "Сортувати за оцінкою"
+    HBox hb = new HBox();
+    hb.setSpacing(5);
+    hb.getChildren().addAll(sortByNameButton, sortByLastNameButton, sortByMarkButton);
+    hb.setAlignment(Pos.CENTER);
+    return hb;
+}
 
-        // Створюємо горизонтальний ряд
-        HBox hb = new HBox();
-        // Відстань між елементами ряду
-        hb.setSpacing(5);
-        // Додаємо до ряду елементи. У нашому випадку – кнопки
-        hb.getChildren().addAll(sortByNameButton, sortByLastNameButton, sortByMarkButton);
-        // Говоримо, що елементи в ряді мають бути вирівняні по центру
-        hb.setAlignment(Pos.CENTER);
-
-        return hb;
-    }
 
     public static void main(String[] args) {
-        // Метод запускає додаток
         launch(args);
     }
 }
